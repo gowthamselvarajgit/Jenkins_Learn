@@ -4,18 +4,15 @@ pipeline {
     stages{
         stage('Clone Dev Branch'){
             steps{
-                echo 'Cloning dev Branch'
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name:'*/gitnew']],
-                    userRemoteConfigs: [[url: 'https://github.com/gowthamselvarajgit/LearnGit1.git']]
-                ])
+                echo 'Cloning gitnew branch...'
+                git branch: 'gitnew', url: 'https://github.com/gowthamselvarajgit/LearnGit1.git'
+
             }
         }
 
         stage('Verify Branch'){
             steps{
-                echo 'Checkng current branch'
+                echo 'Checking current branch'
                 sh 'git branch'
             }
         }
