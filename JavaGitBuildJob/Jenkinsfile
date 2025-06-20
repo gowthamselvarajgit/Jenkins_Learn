@@ -11,14 +11,14 @@ pipeline {
         stage('Set permission'){
                 steps{
                     echo "Making build.sh executable..."
-                sh 'chmod +x build.sh'
+                    sh 'chmod +x JavaGitBuildJob/build.sh'
                 }
         }
 
         stage('Run Build Script'){
             steps{
                 echo "Running build.sh..."
-                sh './build.sh'
+                sh './JavaGitBuildJob/build.sh'
             }
         }
     }
