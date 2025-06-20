@@ -6,7 +6,7 @@ pipeline{
             steps{
                 echo 'Webhook triggered - pulling latest code...'
                 sh 'git log -1 --oneline'
-                sh 'echo "Build triggered by Github webhook'
+                sh 'echo "Build triggered by Github webhook"'
             }
         }
     }
