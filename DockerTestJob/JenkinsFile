@@ -1,0 +1,16 @@
+pipleline {
+    agent {
+        docker {
+            image 'alphine'
+            label ''
+        }
+    }
+    stages{
+        stage('Run Command in Docker'){
+            steps{
+                echo 'Starting Docker container...'
+                sh 'echo "Running in Docker Container"'
+            }
+        }
+    }
+}
