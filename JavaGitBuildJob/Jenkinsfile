@@ -1,0 +1,25 @@
+pipleline {
+    agent any 
+    
+    stages{
+        stage('Clone Repository...'){
+            steps{
+                echo 'Cloning the code from github...'
+            }
+        }
+
+        stage('Set permission'){
+                steps{
+                    echo "Making build.sh executable..."
+                sh 'chmod +x build.sh'
+                }
+        }
+
+        stage('Run Build Script'){
+            steps{
+                echo "Running build.sh..."
+                sh './build.sh'
+            }
+        }
+    }
+}
