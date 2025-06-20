@@ -1,0 +1,13 @@
+pipeline{
+    agent any 
+
+    stages{
+        stage('Pull and Builds'){
+            steps{
+                echo 'Webhook triggered - pulling latest code...'
+                sh 'git log -1 --oneline'
+                sh 'echo "Build triggered by Github webhook'
+            }
+        }
+    }
+}
