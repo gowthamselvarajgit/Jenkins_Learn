@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --no-cache-dir -r requirementa.txt
+RUN pip install --no-cache-dir -r requirement.txt
 
 CMD [ "./test.sh" ]
