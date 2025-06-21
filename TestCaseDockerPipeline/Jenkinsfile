@@ -23,7 +23,9 @@ pipeline {
         stage('Run Test in Container') {
             steps {
                 script {
-                    docker.image(env.IMAGE_NAME).run('--rm')
+                    docker.image(env.IMAGE_NAME).inside {
+                        sh './test.sh'
+                    }
                 }
             }
         }
