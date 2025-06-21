@@ -12,19 +12,8 @@ pipeline {
                 git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
-
-        stage('Terraform Init & Plan') {
-            steps {
-                dir('terraform') {
-                    sh 'pwd'
-                    sh 'ls -la'
-                    sh 'terraform init'
-                    sh 'terraform plan'
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
+        
+    stage('Build Docker Image') {
             steps {
                 dir('app') {
                     sh "docker build -t ${IMAGE_NAME} ."
@@ -37,6 +26,18 @@ pipeline {
                 sh "docker run -d --rm --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
+        stage('Terraform Init & Plan') {
+            steps {
+                dir('terraform') {
+                    sh 'pwd'
+                    sh 'ls -la'
+                    sh 'terraform init'
+                    sh 'terraform plan'
+                }
+            }
+        }
+
+        
     }
 
     post {
