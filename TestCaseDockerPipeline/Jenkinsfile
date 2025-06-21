@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = '' 
+        IMAGE_NAME = "testcase-docker-pipeline-image"
     }
 
     stages {
@@ -15,8 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("testcase-docker-pipeline-image", "TestCaseDockerPipeline")
-                    env.IMAGE_NAME = dockerImage.imageName()
+                    docker.build(env.IMAGE_NAME, "TestCaseDockerPipeline")
                 }
             }
         }
@@ -24,7 +23,7 @@ pipeline {
         stage('Run Test in Container') {
             steps {
                 script {
-                    docker.image(env.IMAGE_NAME).run("--rm")
+                    docker.image(env.IMAGE_NAME).run('--rm')
                 }
             }
         }
