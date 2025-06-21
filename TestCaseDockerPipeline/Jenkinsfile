@@ -1,25 +1,30 @@
-pipeline{
-    agent any 
+pipeline {
+    agent any
 
-    stages{
-        stage('Clone Repo'){
-            steps{
+    environment {
+        IMAGE_NAME = '' 
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
                 git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
 
-        stage('Build Docker Image'){
-            steps{
+        stage('Build Docker Image') {
+            steps {
                 script {
-                    dockerImage = docker.build("testcase-docker-pipeline-image", "TestCaseDockerPipeline")
+                    def dockerImage = docker.build("testcase-docker-pipeline-image", "TestCaseDockerPipeline")
+                    env.IMAGE_NAME = dockerImage.imageName()
                 }
             }
         }
 
-        stage('Run Test in Container'){
-            steps{
-                script{
-                    dockerImage.run("--rm")
+        stage('Run Test in Container') {
+            steps {
+                script {
+                    docker.image(env.IMAGE_NAME).run("--rm")
                 }
             }
         }
