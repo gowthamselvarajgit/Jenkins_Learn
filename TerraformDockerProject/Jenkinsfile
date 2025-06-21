@@ -1,20 +1,20 @@
 pipeline {
     agent any 
 
-    environment{
+    environment {
         IMAGE_NAME = "terraform-docker-app"
         CONTAINER_NAME = "terraform-docker-container"
     }
 
-    stages{
-        stage('Clone Repo'){
-            steps{
+    stages {
+        stage('Clone Repo') {
+            steps {
                 git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
 
-        stage('Terraform Init & Plan'){
-            steps{
+        stage('Terraform Init & Plan') {
+            steps {
                 dir('terraform') {
                     sh 'terraform init'
                     sh 'terraform plan'
@@ -22,24 +22,24 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image'){
-            steps{
-                dir('app'){
+        stage('Build Docker Image') {
+            steps {
+                dir('app') {
                     sh "docker build -t ${IMAGE_NAME} ."
                 }
             }
         }
 
-        stage('Run Docker Image'){
-            steps{
+        stage('Run Docker Image') {
+            steps {
                 sh "docker run -d --rm --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
     }
 
-    post{
-        always{
-             sh "docker rm -f ${CONTAINER_NAME} || true"
+    post {
+        always {
+            sh "docker rm -f ${CONTAINER_NAME} || true"
         }
     }
 }
