@@ -1,0 +1,27 @@
+pipeline{
+    agent any
+
+    stages{
+        stage('clone repo'){
+            steps{
+                git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
+            }
+        }
+
+        stage('Build Docker Image'){
+            steps{
+                script{
+                    dockerImage = docker.build("dockerized-python-jenkins")
+                }
+            }
+        }
+
+        stage('Run Docker Container'){
+            steps{
+                script{
+                    docker.image("dockerized-python-jenkins").run()
+                }
+            }
+        }
+    }
+}
