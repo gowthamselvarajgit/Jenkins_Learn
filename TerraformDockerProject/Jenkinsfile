@@ -23,8 +23,8 @@ pipeline {
 
         stage('Terraform Init & Plan') {
             steps {
-                sh 'terraform -chdir=TerraformDockerProject/terraform init'
-                sh 'terraform -chdir=TerraformDockerProject/terraform plan'
+                sh 'terraform init'
+                sh 'terraform plan'
             }
         }
 
