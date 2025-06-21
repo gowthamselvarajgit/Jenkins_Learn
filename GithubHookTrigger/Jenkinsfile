@@ -1,12 +1,16 @@
-pipeline{
+pipeline {
     agent any 
 
     stages{
-        stage('Pull and Builds'){
+        stage('Pull Code') {
             steps{
-                echo 'Webhook triggered - pulling latest code...'
+                git url: 'https://github.com/gowthamselvarajgit/LearnGit1.git', branch: 'main'
+            }
+        }
+        stage('Build'){
+            steps{
+                echo 'Building the project'
                 sh 'git log -1 --oneline'
-                sh 'echo "Build triggered by Github webhook"'
             }
         }
     }
