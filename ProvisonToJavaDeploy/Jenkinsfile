@@ -1,0 +1,70 @@
+pipeline {
+    agent any 
+
+    environment{
+        IMAGE_NAME = "java-docker-app"
+    }
+
+    stages{
+        stage('Clone Repo'){
+            steps{
+                git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
+            }
+        }
+
+        stage('Terraform Init and Apply'){
+            steps{
+                withCredentials([usernamePassword(
+                    credentialsId: 'aws_creds',
+                    usernameVariable: 'AWS_ACCESS_KEY_ID',
+                    passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                )]) {
+                    dir('ProvisionToJavaDeploy/terraform'){
+                        sh '''
+                            terraform init
+                            terraform apply -auto-approve \
+                                -var="aws_access_key=$AWS_ACCESS_KEY_ID" \
+                                -var="aws_seret_key=$AWS_SECRET_ACCESS_KEY" \
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Generate inventory'){
+            steps{
+                sh 'bash generate_inventory.sh'
+            }
+        }
+
+        stage('Install Docker on EC2 using Ansible'){
+            steps{
+                sh 'ansible-playbook -i ansible/inventory.ini ansible/install_docker.yaml'
+            }
+        }
+
+        stage('Build Java Docker Image'){
+            steps{
+                dir('ProvisionToJavaDeploy/java-app'){
+                    sh 'docker build -t ${IMAGE_NAME} .'
+                }
+            }
+        }
+
+        stage('Push & Run Docker App on EC2'){
+            steps{
+                script{
+                    def ec2_ip = sh(script: 'cd ProvisionToJavaDeploy/terraform && terraform output -raw instance_ip', returnStdout: true).trim()
+                    sh """
+                        docker save ${IMAGE_NAME} > app.tar
+                        scp -o StrictHostKeyChecking=no -i /home/gowtham/Downloads/key_pair/ec2.pem app.tar ubuntu@${ec2_ip}:/home/ubuntu/
+                        ssh -o StrictHostKeyChecking=no -i /home/gowtham/Downloads/key_pair/ec2.pem ubuntu@${ec2_ip} '
+                            docker load < home/ubuntu/app.tar &&
+                            docker run --rm ${IMAGE_NAME}
+                        '
+                    """
+                }
+            }
+        }
+    }
+}
