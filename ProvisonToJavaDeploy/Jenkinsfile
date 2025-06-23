@@ -75,13 +75,19 @@ pipeline {
 
         stage('Push & Run Docker App on EC2'){
             steps{
-                script{
-                    def ec2_ip = sh(script: 'cd ProvisionToJavaDeploy/terraform && terraform output -raw instance_ip', returnStdout: true).trim()
+                script {
+                    def ec2_ip = sh(
+                        script: 'cd ProvisionToJavaDeploy/terraform && terraform output -raw instance_ip',
+                        returnStdout: true
+                    ).trim()
+
+                    echo "EC2 IP: ${ec2_ip}"   // <- Add this line to debug
+
                     sh """
                         docker save ${IMAGE_NAME} > app.tar
                         scp -o StrictHostKeyChecking=no -i /home/gowtham/Downloads/key_pair/ec2.pem app.tar ubuntu@${ec2_ip}:/home/ubuntu/
                         ssh -o StrictHostKeyChecking=no -i /home/gowtham/Downloads/key_pair/ec2.pem ubuntu@${ec2_ip} '
-                            docker load < home/ubuntu/app.tar &&
+                            docker load < /home/ubuntu/app.tar &&
                             docker run --rm ${IMAGE_NAME}
                         '
                     """
