@@ -6,4 +6,4 @@ COPY HelloWorld.java .
 
 RUN javac HelloWorld.java
 
-CMD [ "java", "App" ]
+CMD [ "java", "HelloWorld" ]
