@@ -51,12 +51,16 @@ pipeline {
 
         stage('Install Docker on EC2 using Ansible'){
             steps{
-                dir('ProvisonToJavaDeploy/ansible'){
-                   sh '''
-                    ANSIBLE_HOST_KEY_CHECKING=False \
-                    ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini install_docker.yaml
-                    '''
-                }  
+                withCredentials([file(credentialsId: 'ec2_ssh_key', variable: 'EC2_PEM')]){
+                    dir('ProvisonToJavaDeploy/ansible'){
+                    sh '''
+                        chmod 400 $EC2_PEM
+                        sed -i "s|ansible_ssh_private_key_file=.*|ansible_ssh_private_key_file=$EC2_PEM|" inventory.ini
+                        ANSIBLE_HOST_KEY_CHECKING=False \
+                        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini install_docker.yaml
+                        '''
+                    }  
+                }
             }
         }
 
