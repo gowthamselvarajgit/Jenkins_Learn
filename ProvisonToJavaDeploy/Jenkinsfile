@@ -40,6 +40,15 @@ pipeline {
             }
         }
 
+        stage('Show Inventory') {
+            steps {
+                dir('ProvisonToJavaDeploy/ansible') {
+                sh 'cat ansible/inventory.ini'
+                }
+            }       
+        }
+
+
         stage('Install Docker on EC2 using Ansible'){
             steps{
                 dir('ProvisonToJavaDeploy'){
@@ -47,6 +56,7 @@ pipeline {
                 }  
             }
         }
+
 
         stage('Build Java Docker Image'){
             steps{
