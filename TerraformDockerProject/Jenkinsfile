@@ -51,6 +51,7 @@ pipeline {
                 sh "docker run --rm ${IMAGE_NAME}"
             }
         }
+    }
 
     post {
         always {
