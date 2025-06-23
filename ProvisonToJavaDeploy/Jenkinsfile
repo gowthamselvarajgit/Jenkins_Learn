@@ -67,7 +67,7 @@ pipeline {
 
         stage('Build Java Docker Image'){
             steps{
-                dir('ProvisionToJavaDeploy/java-app'){
+                dir('ProvisonToJavaDeploy/java-app'){
                     sh 'docker build -t ${IMAGE_NAME} .'
                 }
             }
