@@ -15,7 +15,7 @@ pipeline {
         stage('Terraform Init and Apply'){
             steps{
                 withCredentials([usernamePassword(
-                    credentialsId: 'aws-creds',
+                    credentialsId: 'aws_creds',
                     usernameVariable: 'AWS_ACCESS_KEY_ID',
                     passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                 )]){
