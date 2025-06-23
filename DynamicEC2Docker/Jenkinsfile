@@ -19,7 +19,7 @@ pipeline {
                     usernameVariable: 'AWS_ACCESS_KEY_ID',
                     passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                 )]){
-                    dir('terraform') {
+                    dir('DynamicEC2Docker/terraform') {
                         sh '''
                             terraform init
                             terraform apply -auto-approve \
