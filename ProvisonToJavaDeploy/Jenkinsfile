@@ -51,8 +51,10 @@ pipeline {
 
         stage('Install Docker on EC2 using Ansible'){
             steps{
-                dir('ProvisonToJavaDeploy'){
-                    sh 'ansible-playbook -i ansible/inventory.ini ansible/install_docker.yaml'
+                dir('ProvisonToJavaDeploy/ansible'){
+                   sh '''
+                    ANSIBLE_HOST_KEY_CHECKING=False \
+                    ansible-playbook -i inveventory.ini install docker.yaml
                 }  
             }
         }
