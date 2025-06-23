@@ -42,7 +42,7 @@ resource "aws_route_table_association" "rt_assoc" {
 
 resource "aws_security_group" "sg" {
   name = "sg"
-  vpc_id = var.vpc_id
+  vpc_id = aws_vpc.main.id
 
   ingress {
     from_port = 22
@@ -70,7 +70,7 @@ resource "aws_instance" "ec2" {
   ami = var.ami
   instance_type = var.instance_type
   key_name = var.key_name
-  subnet_id = var.subnet_id
+  subnet_id = aws_subnet.subnet.id
   vpc_security_group_ids = [aws_security_group.sg.id]
   associate_public_ip_address = true
   tags = {

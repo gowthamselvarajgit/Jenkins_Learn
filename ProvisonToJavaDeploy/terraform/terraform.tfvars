@@ -1,5 +1,3 @@
 ami = "ami-0f918f7e67a3323f0"
 instance_type = "t2.micro"
 key_name = "ec2"
-subnet_id = "subnet-00601faab03046252"
-vpc_id = "vpc-0abbda2e695278f77"
