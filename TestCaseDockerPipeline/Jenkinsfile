@@ -12,15 +12,21 @@ pipeline {
             }
         }
 
+        stage('List Repo Contents'){
+            steps{
+                sh 'ls -la'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t testcase-docker-pipeline-image TestCaseDockerPipeline'
+                sh "docker build -t ${IMAGE_NAME} TestCaseDockerPipeline"
             }
         }
 
         stage('Run Test in Container') {
             steps {
-                sh 'docker run --rm testcase-docker-pipeline-image'
+                sh "docker run --rm ${IMAGE_NAME}"
             }
         }
     }
