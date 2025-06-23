@@ -77,7 +77,7 @@ pipeline {
             steps{
                 script {
                     def ec2_ip = sh(
-                        script: 'cd ProvisionToJavaDeploy/terraform && terraform output -raw instance_ip',
+                        script: 'cd ProvisonToJavaDeploy/terraform && terraform output -raw instance_ip',
                         returnStdout: true
                     ).trim()
 
