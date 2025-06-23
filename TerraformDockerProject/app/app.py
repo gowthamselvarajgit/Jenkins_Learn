@@ -1,1 +1,1 @@
-print(""Hello from Docker app inside Jenkins pipeline!"")
+print("Hello from Docker app inside Jenkins pipeline!")
