@@ -48,10 +48,9 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d --rm --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                sh "docker run --rm ${IMAGE_NAME}"
             }
         }
-    }
 
     post {
         always {
