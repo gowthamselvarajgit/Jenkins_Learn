@@ -55,6 +55,7 @@ pipeline {
                    sh '''
                     ANSIBLE_HOST_KEY_CHECKING=False \
                     ansible-playbook -i inveventory.ini install docker.yaml
+                    '''
                 }  
             }
         }
