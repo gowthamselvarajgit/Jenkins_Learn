@@ -33,8 +33,10 @@ pipeline {
 
         stage('Generate inventory'){
             steps{
-                sh 'chmod +x generate_inventory.sh'
-                sh './generate_inventory.sh'
+                dir('ProvisionToJavaDeploy') {
+                    sh 'chmod +x generate_inventory.sh'
+                    sh './generate_inventory.sh'
+                }
             }
         }
 
