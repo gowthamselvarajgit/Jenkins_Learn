@@ -43,7 +43,7 @@ pipeline {
         stage('Show Inventory') {
             steps {
                 dir('ProvisonToJavaDeploy/ansible') {
-                sh 'cat ansible/inventory.ini'
+                sh 'cat inventory.ini'
                 }
             }       
         }
