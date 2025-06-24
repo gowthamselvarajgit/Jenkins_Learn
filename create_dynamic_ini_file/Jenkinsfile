@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // For Secret File PEM
-        PEM_FILE = credentials('ec2_ssh_key')
+        // AWS credentials will be injected inside withCredentials block
     }
 
     stages {
@@ -24,12 +23,13 @@ pipeline {
             }
         }
 
-
         stage('Generate Ansible Inventory') {
             steps {
                 dir('create_dynamic_ini_file/ansible') {
-                    sh 'chmod +x generate_inventory.sh'
-                    sh "./generate_inventory.sh $PEM_FILE"
+                    withCredentials([file(credentialsId: 'ec2_ssh_key', variable: 'PEM_FILE')]) {
+                        sh 'chmod +x generate_inventory.sh'
+                        sh "./generate_inventory.sh $PEM_FILE"
+                    }
                 }
             }
         }
@@ -45,10 +45,10 @@ pipeline {
 
     post {
         success {
-            echo "App deployed successfully!"
+            echo "✅ App deployed successfully!"
         }
         failure {
-            echo "Pipeline failed. Check logs."
+            echo "❌ Pipeline failed. Check the logs."
         }
     }
 }
