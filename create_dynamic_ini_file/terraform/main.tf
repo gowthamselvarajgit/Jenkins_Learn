@@ -8,4 +8,6 @@ module "ec2" {
   instance_type = var.instance_type
   key_name = var.key_name
   name = var.name
+  vpc_cird = var.vpc_cird
+  subnet_cidr = var.subnet_cidr
 }
