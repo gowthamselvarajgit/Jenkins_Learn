@@ -87,14 +87,14 @@ pipeline {
                     echo "EC2 IP: ${ec2_ip}"
 
                     withCredentials([file(credentialsId: 'ec2_ssh_key', variable: 'EC2_PEM')]) {
-                        sh """
+                        sh '''
                             docker save $IMAGE_NAME > app.tar
                             scp -o StrictHostKeyChecking=no -i $EC2_PEM app.tar ubuntu@${ec2_ip}:/home/ubuntu/
                             ssh -o StrictHostKeyChecking=no -i $EC2_PEM ubuntu@${ec2_ip} '
                                 docker load < /home/ubuntu/app.tar &&
                                 docker run --rm $IMAGE_NAME
                             '
-                        """
+                        '''
                     }
                 }
             }
