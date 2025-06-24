@@ -14,7 +14,7 @@ variable "name" {
   
 }
 
-variable "vpc_cird" {
+variable "vpc_cidr" {
   
 }
 
