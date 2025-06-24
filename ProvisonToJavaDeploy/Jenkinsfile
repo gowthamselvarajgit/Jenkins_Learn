@@ -51,6 +51,7 @@ pipeline {
 
         stage('Install Docker on EC2 using Ansible') {
             steps {
+                sleep time: 60, unit: 'SECONDS' // Add delay
                 withCredentials([file(credentialsId: 'ec2_ssh_key', variable: 'EC2_PEM')]) {
                     dir('ProvisonToJavaDeploy/ansible') {
                         sh '''
