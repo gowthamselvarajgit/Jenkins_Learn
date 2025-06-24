@@ -1,0 +1,40 @@
+---
+- name: Deploy App with Docker
+  hosts: app
+  become: true
+
+  vars:
+    app_dir: /home/ubuntu/app/
+
+  tasks:
+    - name: Update APT
+      apt:
+        update_cache: yes
+
+    - name: Install Docker 
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Ensure app directory exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: '0755'
+        owner: ubuntu 
+        group: ubuntu 
+
+    - name: Copy app files
+      copy:
+        src: ../app/
+        dest: "{{ app_dir }}"
+        mode: '0755'
+      notify:
+        - Build and run Docker container
+
+  handlers:
+    - name: Build and run Docker container 
+      shell: |
+        cd {{ app_dir }}
+        docker build -t flask-app .
+        docker run -d -p 5000:5000 flask-app

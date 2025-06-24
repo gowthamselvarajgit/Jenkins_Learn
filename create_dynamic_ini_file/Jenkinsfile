@@ -1,0 +1,51 @@
+pipeline {
+    agent any 
+
+    environment{
+        AWS_ACCESS_KEY_ID = credentials('AWS_CREDENTIALS').username
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_CREDENTIALS').password 
+        PEM_FILE = credentials('EC2_PEM_FILE')
+    }
+
+    stages{
+        stage('Clone Repo'){
+                steps{
+                    git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
+                }
+            } 
+
+            stage('Terraform Init & Apply'){
+                dir('create_dynamic_ini_file/terraform'){
+                    steps{
+                        sh 'terraform init'
+                        sh 'terraform apply -auto-approve'                        
+                    }
+                }
+            }
+
+            stage('Generate Ansible Inventory'){
+                dir('create_dynamic_ini_file/ansible'){
+                    steps{
+                        sh 'chmod +x generate_inventory.sh'
+                        sh './generate_inventory.sh '
+                    }
+                }
+            }
+
+            stage('Run Ansible Playbook'){
+                dir('create_dynamic_ini_file/ansible'){
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory install_app.yml'
+                }
+            }
+        }
+    }
+
+    post{
+        success{
+            echo "App Deployed Successfully"
+        }
+        failure{
+            echo "Pipeline failes."
+        }
+    }
+}
