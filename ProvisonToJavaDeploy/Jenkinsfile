@@ -87,20 +87,20 @@ pipeline {
                     echo "EC2 IP: ${ec2_ip}"
 
                     withCredentials([file(credentialsId: 'ec2_ssh_key', variable: 'EC2_PEM')]) {
-                        sh """
+                        sh '''
                             docker save $IMAGE_NAME > app.tar
                             echo "Running SCP to EC2"
-                            scp -o StrictHostKeyChecking=no -i "$EC2_PEM" app.tar ubuntu@${ec2_ip}:/home/ubuntu/
-                        """
+                            scp -o StrictHostKeyChecking=no -i "$EC2_PEM" app.tar ubuntu@''' + ec2_ip + ''':/home/ubuntu/
+                        '''
 
-                        sh """
+                        sh '''
                             echo "Running SSH to load and run Docker container"
-                            ssh -o StrictHostKeyChecking=no -i "$EC2_PEM" ubuntu@${ec2_ip} '
-                                docker load < /home/ubuntu/app.tar &&
-                                docker rm -f $IMAGE_NAME || true &&
-                                docker run -d --name $IMAGE_NAME $IMAGE_NAME
+                            ssh -o StrictHostKeyChecking=no -i "$EC2_PEM" ubuntu@''' + ec2_ip + ''' '
+                                sudo docker load < /home/ubuntu/app.tar &&
+                                sudo docker rm -f java-docker-app || true &&
+                                sudo docker run -d --name java-docker-app java-docker-app
                             '
-                        """
+                        '''
                     }
                 }
             }
