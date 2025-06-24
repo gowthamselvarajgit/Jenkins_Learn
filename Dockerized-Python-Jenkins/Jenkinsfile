@@ -1,25 +1,33 @@
-pipeline{
+pipeline {
     agent any
 
-    stages{
-        stage('clone repo'){
-            steps{
+    environment {
+        IMAGE_NAME = "dockerized-python-jenkins"
+        DOCKERFILE_DIR = "Dockerized-Python-Jenkins"
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                echo "Cloning repository..."
                 git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
 
-        stage('Build Docker Image'){
-            steps{
-                script{
-                    dockerImage = docker.build("dockerized-python-jenkins", "Dockerized-Python-Jenkins/")
+        stage('Build Docker Image') {
+            steps {
+                echo "Building Docker image..."
+                script {
+                    dockerImage = docker.build(IMAGE_NAME, DOCKERFILE_DIR)
                 }
             }
         }
 
-        stage('Run Docker Container'){
-            steps{
-                script{
-                    dockerImage.run("--rm");
+        stage('Run Docker Container') {
+            steps {
+                echo "Running Docker container..."
+                script {
+                    dockerImage.run('--rm') // '--rm' will auto-remove the container after execution
                 }
             }
         }
