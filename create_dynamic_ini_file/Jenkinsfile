@@ -37,7 +37,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 dir('create_dynamic_ini_file/ansible') {
-                    sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini install_app.yml'
+                    sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini install_api.yml'
                 }
             }
         }
