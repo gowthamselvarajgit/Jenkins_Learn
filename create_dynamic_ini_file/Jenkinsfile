@@ -38,8 +38,6 @@ pipeline {
                 }
             }
         }
-    }
-
     post{
         success{
             echo "App Deployed Successfully"
@@ -49,3 +47,4 @@ pipeline {
         }
     }
 }
+
