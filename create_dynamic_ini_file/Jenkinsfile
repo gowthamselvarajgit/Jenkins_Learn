@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init & Apply') {
             steps {
-                dir('terraform') {
+                dir('create_dynamic_ini_file/terraform') {
                     withCredentials([usernamePassword(credentialsId: 'aws_creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
@@ -27,7 +27,7 @@ pipeline {
 
         stage('Generate Ansible Inventory') {
             steps {
-                dir('ansible') {
+                dir('create_dynamic_ini_file/ansible') {
                     sh 'chmod +x generate_inventory.sh'
                     sh "./generate_inventory.sh $PEM_FILE"
                 }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                dir('ansible') {
+                dir('create_dynamic_ini_file/ansible') {
                     sh 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini install_app.yml'
                 }
             }
