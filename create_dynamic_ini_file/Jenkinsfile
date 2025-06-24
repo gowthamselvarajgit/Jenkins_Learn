@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // For Secret File PEM
-        PEM_FILE = credentials('EC2_PEM_FILE')
+        PEM_FILE = credentials('ec2_ssh_key')
     }
 
     stages {
