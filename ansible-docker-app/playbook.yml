@@ -1,8 +1,6 @@
+---
 - name: Deploy Flask App in Docker using ansible-flask-app
-  hosts: localgroup
-  connection: local
-  gather_facts: yes
-  become: true
-
+  hosts: all
+  become: yes
   roles:
     - docker_app
