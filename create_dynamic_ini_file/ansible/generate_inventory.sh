@@ -8,12 +8,16 @@ if [ -z "$PEM_KEY_PATH" ]; then
     exit 1
 fi
 
+cd ../terraform
+
 IP=$(terraform output -raw public_ip 2>/dev/null)
 
 if [ -z "$IP" ]; then
     echo "Error: Could not retrieve public IP from Terraform"
     exit 1
 fi
+
+cd ../ansible
  
 cat <<EOF > inventory.ini
 [app]
