@@ -8,7 +8,7 @@ if [ -z "$PEM_KEY_PATH" ]; then
     exit 1
 fi
 
-IP=$(terraform output -raw instance_ip 2>/dev/null)
+IP=$(terraform output -raw public_ip 2>/dev/null)
 
 if [ -z "$IP" ]; then
     echo "Error: Could not retrieve public IP from Terraform"
