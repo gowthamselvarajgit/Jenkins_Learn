@@ -2,66 +2,63 @@ pipeline {
     agent any
 
     environment {
-        ANSIBLE_HOST_KEY_CHECKING = 'False'
+        REMOTE_HOST = "192.168.20.73"
+        INVENTORY_FILE = "inventory.ini"
+        PLAYBOOK_FILE = "playbook.yml"
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Checkout Repo') {
             steps {
                 git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
 
-    stage('Install Dependencies') {
-        steps {
-            sh '''
-            sudo apt-get update
-            sudo apt-get install -y ansible curl gnupg2 ca-certificates lsb-release
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    # Clean old Docker repo files
+                    sudo rm -f /etc/apt/sources.list.d/docker.list
+                    sudo rm -f /usr/share/keyrings/docker.gpg
 
-            # Remove conflicting versions if any
-            sudo apt-get remove -y docker docker-engine docker.io containerd runc || true
+                    # Add GPG key
+                    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
 
-            # Add Docker's official GPG key
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
+                    # Add Docker repo with signed-by
+                    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-
-            # Add Docker's official repo
-            echo \
-            "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
-            https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
-            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-            # Update and install Docker
-            sudo apt-get update
-            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
-            # Start Docker
-            sudo systemctl start docker
-            sudo systemctl enable docker
-            '''
+                    # Update and install packages
+                    sudo apt-get update
+                    sudo apt-get install -y docker-ce docker-ce-cli containerd.io ansible
+                '''
+            }
         }
-    }
-
 
         stage('Run Ansible Playbook') {
             steps {
-                sh '''
-                cd ansible-docker-app
-                ansible-playbook -i inventory.ini playbook.yml
-                '''
+                dir('ansible-docker-app') {
+                    sh '''
+                        ansible-playbook -i inventory.ini playbook.yml
+                    '''
+                }
             }
         }
 
         stage('Verify Docker Container') {
             steps {
                 sh '''
-                echo "✅ Listing running Docker containers:"
-                docker ps
-
-                echo "🌐 Testing Flask app endpoint (localhost:5000):"
-                curl --silent http://localhost:5000 || echo "❌ App not reachable"
+                    docker ps | grep ansible-flask-container
                 '''
             }
+        }
+    }
+
+    post {
+        failure {
+            echo "❌ Build failed. Check logs above!"
+        }
+        success {
+            echo "✅ Build and deployment completed successfully!"
         }
     }
 }
