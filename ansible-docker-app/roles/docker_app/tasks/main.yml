@@ -8,6 +8,7 @@
     repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
     filename: docker
+    exclusive: true
 
 - name: Install Docker Packages
   apt:
@@ -23,7 +24,7 @@
     name: docker
     state: started
     enabled: true
-    
+
 - name: Create app directory
   file:
     path: /opt/docker-app
