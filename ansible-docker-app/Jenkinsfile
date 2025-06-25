@@ -25,18 +25,20 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                sh 'ansible-playbook -i inventory.ini playbook.yml'
+                sh '''
+                ansible-playbook -i inventory.ini playbook.yml
+                '''
             }
         }
 
         stage('Verify Docker Container') {
             steps {
                 sh '''
-                echo "Listing running Docker containers:"
+                echo "✅ Listing running Docker containers:"
                 docker ps
 
-                echo "Testing Flask app endpoint (localhost:5000):"
-                curl --silent http://localhost:5000 || echo "App not reachable"
+                echo "🌐 Testing Flask app endpoint (localhost:5000):"
+                curl --silent http://localhost:5000 || echo "❌ App not reachable"
                 '''
             }
         }
