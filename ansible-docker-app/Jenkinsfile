@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
+                git url: 'https://github.com/<your-username>/ansible-docker-app.git', branch: 'main'
             }
         }
 
@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh '''
                 sudo apt-get update
-                sudo apt-get install -y ansible docker.io
+                sudo apt-get install -y ansible docker.io curl
                 sudo systemctl start docker
                 sudo systemctl enable docker
                 '''
@@ -26,6 +26,18 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 sh 'ansible-playbook -i inventory.ini playbook.yml'
+            }
+        }
+
+        stage('Verify Docker Container') {
+            steps {
+                sh '''
+                echo "Listing running Docker containers:"
+                docker ps
+
+                echo "Testing Flask app endpoint (localhost:5000):"
+                curl --silent http://localhost:5000 || echo "App not reachable"
+                '''
             }
         }
     }
