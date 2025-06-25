@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/<your-username>/ansible-docker-app.git', branch: 'main'
+                git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
             }
         }
 
