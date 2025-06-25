@@ -1,57 +1,66 @@
-- name: Add Docker GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+---
+- name: Deploy Flask App in Docker using ansible-flask-app
+  hosts: all
+  become: true
+  vars:
+    docker_gpg_path: /usr/share/keyrings/docker.gpg
 
-- name: Remove old Docker APT repo (if any)
-  file:
-    path: /etc/apt/sources.list.d/docker.list
-    state: absent
-    
-- name: Add Docker APT repository
-  apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-    state: present
-    filename: docker
+  tasks:
+    - name: Add Docker GPG key
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: "{{ docker_gpg_path }}"
+        mode: '0644'
 
-- name: Install Docker Packages
-  apt:
-    name: 
-      - docker-ce 
-      - docker-ce-cli 
-      - containerd.io
-    state: present
-    update_cache: yes
+    - name: Remove old Docker APT repo (if any)
+      file:
+        path: /etc/apt/sources.list.d/docker.list
+        state: absent
 
-- name: Ensure Docker is Running
-  service: 
-    name: docker
-    state: started
-    enabled: true
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by={{ docker_gpg_path }}] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+        state: present
+        filename: docker
 
-- name: Create app directory
-  file:
-    path: /opt/docker-app
-    state: directory
-    mode: '0755'
+    - name: Install Docker Packages
+      apt:
+        name: 
+          - docker-ce 
+          - docker-ce-cli 
+          - containerd.io
+        state: present
+        update_cache: yes
 
-- name: Copy app.py to target
-  copy: 
-    src: app.py
-    dest: /opt/docker-app/app.py
+    - name: Ensure Docker is Running
+      service: 
+        name: docker
+        state: started
+        enabled: true
 
-- name: Copy Dockerfile to target
-  template: 
-    src: Dockerfile.j2
-    dest: /opt/docker-app/Dockerfile
+    - name: Create app directory
+      file:
+        path: /opt/docker-app
+        state: directory
+        mode: '0755'
 
-- name: Build Docker Image
-  command: docker build -t ansible-flask-app /opt/docker-app
+    - name: Copy app.py to target
+      copy: 
+        src: app.py
+        dest: /opt/docker-app/app.py
 
-- name: Run Docker Image
-  docker_container:
-    name: ansible-flask-container
-    image: ansible-flask-app
-    state: started
-    ports:
-      - "5000:5000"
+    - name: Copy Dockerfile to target
+      template: 
+        src: Dockerfile.j2
+        dest: /opt/docker-app/Dockerfile
+
+    - name: Build Docker Image
+      command: docker build -t ansible-flask-app /opt/docker-app
+
+    - name: Run Docker Image
+      docker_container:
+        name: ansible-flask-container
+        image: ansible-flask-app
+        state: started
+        ports:
+          - "5000:5000"
