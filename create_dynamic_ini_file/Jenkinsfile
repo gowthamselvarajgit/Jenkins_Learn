@@ -29,7 +29,9 @@ pipeline {
             steps {
                 dir('create_dynamic_ini_file/ansible') {
                     sh 'chmod +x generate_inventory.sh'
-                    sh "./generate_inventory.sh $PEM_FILE"
+                    script{
+                        sh(script: "./generate_inventory.sh ${PEM_FILE}", label: 'Generate Inventory Securely')
+                    }
                 }
             }
         }
