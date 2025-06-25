@@ -3,4 +3,4 @@
   become: true
 
   roles:
-    -docker_app
+    - docker_app
