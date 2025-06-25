@@ -22,7 +22,8 @@ pipeline {
             sudo apt-get remove -y docker docker-engine docker.io containerd runc || true
 
             # Add Docker's official GPG key
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker.gpg
+
 
             # Add Docker's official repo
             echo \
