@@ -35,6 +35,14 @@ pipeline {
                 }
             }
         }
+        
+        stage('Show Inventory') {
+            steps {
+                dir('create_dynamic_ini_file/ansible') {
+                    sh 'cat inventory.ini'
+                }
+            }
+        }
 
         stage('Run Ansible Playbook') {
             steps {
