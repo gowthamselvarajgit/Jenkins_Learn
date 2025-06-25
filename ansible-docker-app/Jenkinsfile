@@ -45,6 +45,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 sh '''
+                cd ansible-docker-app
                 ansible-playbook -i inventory.ini playbook.yml
                 '''
             }
