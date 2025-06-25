@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IP=$(terraform -chdir=../terraform output -raw instance_ip)
+IP=$(terraform output -raw instance_ip)
 
 PEM_KEY_PATH=$1
 
