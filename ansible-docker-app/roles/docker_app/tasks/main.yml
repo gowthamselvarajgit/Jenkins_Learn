@@ -1,0 +1,33 @@
+- name: Ensure Docker is installed
+  apt:
+    name: docker.io
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Create app directory
+  file:
+    path: /opt/docker-app
+    state: directory
+    mode: '0755'
+
+- name: Copy app.py to target
+  copy: 
+    src: app.py
+    dest: /opt/docker-app/app.py
+
+- name: Copy Dockerfile to target
+  template: 
+    src: Dockerfile.j2
+    dest: /opt/docker-app/Dockerfile
+
+- name: Build Docker Image
+  command: docker build -t ansible-flask-app /opt/docker-app
+
+- name: Run Docker Image
+  docker_container:
+    name: ansible-flask-container
+    image: ansible-flask-app
+    state: started
+    ports:
+      - "5000:5000"

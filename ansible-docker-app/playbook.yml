@@ -1,0 +1,6 @@
+- name: Deploy Flask App in Docker using ansible-flask-app
+  hosts: web
+  become: true
+
+  roles:
+    -docker_app

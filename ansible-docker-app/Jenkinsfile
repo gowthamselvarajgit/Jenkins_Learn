@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/gowthamselvarajgit/Jenkins_Learn.git', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                sudo apt-get update
+                sudo apt-get install -y ansible docker.io
+                sudo systemctl start docker
+                sudo systemctl enable docker
+                '''
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                sh 'ansible-playbook -i inventory.ini playbook.yml'
+            }
+        }
+    }
+}
